@@ -1,6 +1,5 @@
 <template>
-    <div id="app">
-    </div>
+    <router-view />
 </template>
 
 <script lang="ts">
@@ -12,7 +11,9 @@ export default class App extends Vue {}
 
 <style lang="scss">
 html, body, #app {
-  height: 100%;
-  margin: 0;
+    color: #444;
+    font-family: 'Source Sans Pro', sans-serif;
+    height: 100%;
+    margin: 0;
 }
 </style>
