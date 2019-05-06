@@ -28,7 +28,6 @@ export default class ReplayVue extends Vue {
     private coords?: LatLng|null = null;
 
     private mounted() {
-        debugger;
         if (this.$route.query.frame) {
             this.frame = parseInt(this.$route.query.frame as string, 10);
         }

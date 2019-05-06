@@ -20,7 +20,7 @@ export async function fetchMapMetaData(mapName: string): Promise<MapMetaData> {
         return JSON.parse(res as string);
     }
 
-    return res as MapMetaData;
+    return res;
 }
 
 export async function fetchReplays(id: number): Promise<Replay[]> {
