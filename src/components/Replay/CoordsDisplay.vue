@@ -22,3 +22,9 @@ export default class CoordsDisplayVue extends Vue {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.grad-coords-display {
+    padding: 5px 10px;
+}
+</style>

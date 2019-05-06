@@ -23,6 +23,11 @@
             <md-table-cell md-label="Date" md-sort-by="date">{{ item.date }}</md-table-cell>
             <md-table-cell md-label="Duration" md-sort-by="duration">{{ item.duration }}</md-table-cell>
             <md-table-cell md-label="Map" md-sort-by="worldName">{{ item.worldName }}</md-table-cell>
+            <md-table-cell >
+                <md-button class="md-icon-button md-primary md-dense" @click="selectReplay(item)">
+                    <md-icon>play_arrow</md-icon>
+                </md-button>
+            </md-table-cell>
         </md-table-row>
     </md-table>
 </template>
@@ -54,6 +59,10 @@ export default class ReplaysVue extends Vue {
         }
 
         this.searched = this.replays.filter(re => re.missionName.toLowerCase().includes(this.search.toLowerCase()));
+    }
+
+    private selectReplay(replay: Replay) {
+        this.$router.push(`/replay/${replay.id}`);
     }
 }
 </script>

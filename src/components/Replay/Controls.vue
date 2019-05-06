@@ -11,7 +11,7 @@
 
         <md-menu md-direction="top-start" :mdCloseOnClick="true" :mdCloseOnSelect="true" md-size="small">
             <div md-menu-trigger style="display: flex; align-items: center;">
-                <md-button class="md-icon-button" >
+                <md-button class="md-icon-button md-dense">
                     <md-icon>slow_motion_video</md-icon>
                 </md-button>
             </div>
