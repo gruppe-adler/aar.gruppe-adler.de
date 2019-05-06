@@ -1,8 +1,31 @@
 <template>
     <div class="grad-controls grad--group">
-        <i v-if="!isPlaying" @click="play" class="material-icons">play_arrow</i>
-        <i v-else @click="pause" class="material-icons">pause</i>
+        <md-button @click="isPlaying ? pause() : play()" class="md-icon-button md-dense">
+            <md-icon v-if="isPlaying">pause</md-icon>
+            <md-icon v-else-if="frame === max">replay</md-icon>
+            <md-icon v-else>play_arrow</md-icon>
+        </md-button>
+        <!-- <i v-if="!" @click="play" class="material-icons">play_arrow</i>
+        <i v-else @click="pause" class="material-icons">pause</i> -->
         <input type="range" min="1" :max="max" v-model="frame">
+
+        <md-menu md-direction="top-start" :mdCloseOnClick="true" :mdCloseOnSelect="true" md-size="small">
+            <div md-menu-trigger style="display: flex; align-items: center;">
+                <md-button class="md-icon-button" >
+                    <md-icon>slow_motion_video</md-icon>
+                </md-button>
+            </div>
+            <md-menu-content>
+                
+                <md-menu-item
+                    v-for="i in [16,8,4,2,1]"
+                    :key="i"
+                >
+                    <md-radio v-model="playbackSpeedFactor" :value="i" />
+                    <span class="md-list-item-text">{{i}}x</span>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
         <span>{{frame}}/{{max}}</span>
     </div>
 </template>
@@ -17,7 +40,7 @@ export default class ControlsVue extends Vue {
 
     private isPlaying: boolean = false;
     private interval?: number;
-    private playbackSpeedFactor: number = 10;
+    private playbackSpeedFactor: number = 1;
 
     private mounted() {
         window.addEventListener('keyup', this.onKeyUp);
@@ -55,12 +78,16 @@ export default class ControlsVue extends Vue {
     private play() {
         this.isPlaying = true;
 
-        // if playback is done start from the beginning
-        if (this.frame === this.max) this.frame = 0;
-
+        if (this.frame === this.max) {
+            // if playback is done start from the beginning
+            this.frame = 1;
+        } else {
+            // instantly jump to next frame so that user has direct feedback
+            this.frame++;
+        }
 
         this.interval = window.setInterval(() => {
-            this.frame!++;
+            this.frame++;
 
             if (this.frame! >= this.max!) {
                 this.frame = this.max!;
@@ -77,6 +104,14 @@ export default class ControlsVue extends Vue {
 
         window.clearInterval(this.interval);
     }
+
+    @Watch('playbackSpeedFactor')
+    private onSpeedChange() {
+        if (!this.isPlaying) return;
+
+        this.pause();
+        this.play();
+    }
 }
 </script>
 <style lang="scss" scoped>
@@ -85,12 +120,6 @@ export default class ControlsVue extends Vue {
     bottom: 0px;
     right: 0px;
     left: 0px;
-
-    i {
-        cursor: pointer;
-        font-size: 30px;
-        user-select: none;
-    }
 
     input[type=range] {
         width: 100%;
@@ -103,14 +132,14 @@ export default class ControlsVue extends Vue {
             width: 100%;
             height: 4px;
             cursor: pointer;
-            background: rgba(#66AA66, 0.5);
+            background: rgba(#D18D1F, 0.5);
             border-radius: 2px;
         }
         &::-webkit-slider-thumb {
             height: 15px;
             width: 15px;
             border-radius: 15px;
-            background: #66aa66;
+            background: #D18D1F;
             cursor: pointer;
             -webkit-appearance: none;
             margin-top: -5.5px;
@@ -126,12 +155,12 @@ export default class ControlsVue extends Vue {
             height: 15px;
             width: 15px;
             border-radius: 15px;
-            background: #66aa66;
+            background: #D18D1F;
             cursor: pointer;
         }
     }
 
-    span {
+    > span {
         min-width: 60px;
         text-align: right;
     }

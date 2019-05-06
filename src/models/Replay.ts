@@ -1,6 +1,8 @@
 export default interface Replay {
+    id: number;
     missionName: string;
-    startTime: number;
+    date: Date;
+    duration: number;
     worldName: string;
     data?: any;
 }

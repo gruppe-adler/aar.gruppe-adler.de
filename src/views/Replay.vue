@@ -1,8 +1,8 @@
 <template>
     <div class="grad-replay">
-        <Map :worldName="worldName" :callback="mapCallback" />
+        <Map :worldName="replay.worldName" :callback="mapCallback" />
         <div class="grad-replay__top">
-            <Title>XDRKAE IST EIN COOLER TYP UND SO</Title>
+            <Title>{{replay.missionName}} - {{replay.date}}</Title>
             <CoordsDisplay v-if="coords" :coords="coords" />
         </div>
         <Controls :max="200" v-model="frame" />
@@ -13,16 +13,23 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Map, LeafletMouseEvent, LeafletEvent, LatLng } from 'leaflet';
 
-import MapVue from '@/components/Map.vue';
-import CoordsDisplayVue from '@/components/CoordsDisplay.vue';
-import ControlsVue from '@/components/Controls.vue';
-import TitleVue from '@/components/Title.vue';
+import MapVue from '@/components/Replay/Map.vue';
+import CoordsDisplayVue from '@/components/Replay/CoordsDisplay.vue';
+import ControlsVue from '@/components/Replay/Controls.vue';
+import TitleVue from '@/components/Replay/Title.vue';
+import { Replay } from '../models';
 
 @Component({
     components: { Map: MapVue, Controls: ControlsVue, CoordsDisplay: CoordsDisplayVue, Title: TitleVue }
 })
 export default class ReplayVue extends Vue {
-    private worldName: string = 'stratis';
+    private replay: Replay = {
+        id: 1,
+        missionName: 'Breaking Contact',
+        date: new Date(),
+        duration: 0,
+        worldName: 'stratis'
+    };
     private map?: Map;
     private frame: number = 1;
     private coords?: LatLng|null = null;

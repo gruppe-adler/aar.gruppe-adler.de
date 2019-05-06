@@ -1,6 +1,8 @@
 <template>
     <div class="grad-replay__title">
-        <i @click="back" class="material-icons">arrow_back</i>
+        <md-button @click="back" class="md-icon-button md-dense md-white">
+            <md-icon>arrow_back</md-icon>
+        </md-button>
         <slot />
     </div>
 </template>
@@ -12,7 +14,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class TitleVue extends Vue {
 
     private back() {
-        alert('meh');
+        this.$router.push('/replays');
     }
 }
 </script>
@@ -26,24 +28,6 @@ export default class TitleVue extends Vue {
     font-size: 2em;
     overflow: hidden;
     text-overflow: ellipsis;
-    opacity: 0.4;
-    transition: opacity .1s ease-in-out;
-
-    i {
-        opacity: 0.5;
-        font-size: 1em;
-        cursor: pointer;
-        margin-right: 20px;
-        transition: opacity .1s ease-in-out;
-
-        &:hover {
-            opacity: 0.9;
-        }
-    }
-
-    &:hover {
-        opacity: 1;
-    }
-    
+    transition: opacity .1s ease-in-out;    
 }
 </style>

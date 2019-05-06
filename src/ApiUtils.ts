@@ -23,8 +23,23 @@ export async function fetchMapMetaData(mapName: string): Promise<MapMetaData> {
     return res;
 }
 
-export async function fetchReplays(id: number): Promise<Replay[]> {
-    return [];
+export async function fetchReplays(): Promise<Replay[]> {
+    return [
+        {
+            id: 10,
+            missionName: 'Hold the line!',
+            date: new Date(),
+            duration: 7200000,
+            worldName: 'tembelan'
+        },
+        {
+            id: 9,
+            missionName: 'Green Mountain',
+            date: new Date(),
+            duration: 7200000,
+            worldName: 'Malden2035'
+        }
+    ];
 }
 export async function fetchReplay(id: number): Promise<Replay|null> {
     return null;

@@ -28,6 +28,11 @@ export default new Router({
             path: '/replay/:id',
             component: () => import('@/views/Replay.vue'),
             props: true
+        },
+        {
+            path: '/replays',
+            component: () => import('@/views/Replays.vue'),
+            props: true
         }
     ]
 });

@@ -1,5 +1,9 @@
 <template>
-    <div class="grad-map" ref="map"></div>
+    <div>
+        <div class="grad-map" ref="map"></div>
+        <md-progress-spinner v-if="loading" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+        <span v-if="error !== ''">{{error}}</span>
+    </div>
 </template>
 
 <script lang="ts">
@@ -19,6 +23,7 @@ export default class MapVue extends Vue {
     private map?: Map;
     private metaData?: MapMetaData;
     private loading: boolean = true;
+    private error: string = '';
 
     private mounted() {
         this.setupMap();
@@ -57,7 +62,13 @@ export default class MapVue extends Vue {
 
         this.loading = true;
 
-        this.metaData = await fetchMapMetaData(this.worldName);
+        try {
+            this.metaData = await fetchMapMetaData(this.worldName);
+        } catch (err) {
+            this.loading = false;
+            this.error = `Coudln't load meta data for map '${this.worldName}' :(`;
+            return;
+        }
 
         const size = this.metaData.worldSize / POS_FACTOR;
         const bounds = new LatLngBounds([0, 0], [size, size]);
@@ -85,10 +96,19 @@ export default class MapVue extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.grad-map {
+
+div {
     position: absolute;
     z-index: 0;
     height: 100vh;
     width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    span {
+        z-index: 1000;
+    }
 }
 </style>
