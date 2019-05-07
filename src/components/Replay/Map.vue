@@ -76,7 +76,7 @@ export default class MapVue extends Vue {
         // remove all previos layers
         map.eachLayer(layer => map.removeLayer(layer));
 
-        new ArmaTileLayer(`${BASE_URL}/${this.worldName}/tiles/{z}/{x}-{y}.png`, this.metaData.worldSize, {
+        new ArmaTileLayer(`${BASE_URL}/${this.worldName}/{z}/{y}/{x}.png`, this.metaData.worldSize, {
             errorTileUrl: `${BASE_URL}/error/100m.png`,
             maxNativeZoom: this.metaData.maxZoom,
             minNativeZoom: this.metaData.minZoom,
