@@ -8,7 +8,7 @@
                 <Title>{{replay.missionName}} ({{date}})</Title>
             </template>
         </Map>
-        <Controls v-if="replay && replay.data" :max="replay.data.length" v-model="frame" />
+        <Controls v-if="replay && replay.data" :max="replay.data.length" :time="replay.data[frame].time" v-model="frame" />
         <div v-if="loading" class="grad-replay__loading">
             <md-progress-spinner class="grad-map__loader" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
         </div>
@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import { Map, LeafletMouseEvent, LeafletEvent, LatLng, LayerGroup } from 'leaflet';
+import { Map, LeafletMouseEvent, LeafletEvent, LatLng, LayerGroup, Polyline } from 'leaflet';
 
 import MapVue from '@/components/Replay/Map.vue';
 import CoordsDisplayVue from '@/components/Replay/CoordsDisplay.vue';
@@ -26,7 +26,8 @@ import TitleVue from '@/components/Replay/Title.vue';
 import LayersVue from '@/components/Replay/Layers.vue';
 import { Replay, UnitMarker, Record } from '../models';
 import LocationsVue from '@/components/Replay/Locations.vue';
-import { fetchReplay } from '../ApiUtils';
+import { fetchReplay, COLORS } from '../ApiUtils';
+import { armaToLatLng } from '../MapUtils';
 
 @Component({
     components: {
@@ -65,7 +66,23 @@ export default class ReplayVue extends Vue {
             this.frame = parseInt(this.$route.query.frame as string, 10);
         }
 
-        this.layerGroups = this.replay!.data!.map(f  =>  new LayerGroup(f.data.map(record => new UnitMarker(record))));
+        this.layerGroups = this.replay!.data!.map(f  => {
+            const pewPew: Polyline[] = [];
+            const unitMarkers: UnitMarker[] = [];
+
+            f.data.forEach(record => {
+                unitMarkers.push(new UnitMarker(record));
+
+                if (record.target && record.target.length > 0) {
+                    pewPew.push(new Polyline(
+                        [armaToLatLng(record.position), armaToLatLng(record.target)],
+                        { color: record.color, weight: 2, opacity: 0.5 }
+                    ));
+                }
+            });
+
+            return new LayerGroup([...unitMarkers, ...pewPew]);
+        });
 
         this.loading = false;
     }

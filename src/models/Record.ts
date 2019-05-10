@@ -1,6 +1,6 @@
 export default interface Record {
     icon: string;
-    colorId: number;
+    color: string;
     position: [number, number];
     direction: number;
     name: string;

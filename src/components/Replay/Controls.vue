@@ -26,7 +26,7 @@
                 </md-menu-item>
             </md-menu-content>
         </md-menu>
-        <span>{{frame}}/{{max}}</span>
+        <span>{{formattedTime}}</span>
     </div>
 </template>
 
@@ -37,6 +37,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 export default class ControlsVue extends Vue {
     @Prop({ default: 100 }) private max?: number;
     @Prop({ default: 0, type: Number }) private value?: number;
+    @Prop({ default: 0, type: Number }) private time?: number;
 
     private isPlaying: boolean = false;
     private interval?: number;
@@ -111,6 +112,17 @@ export default class ControlsVue extends Vue {
 
         this.pause();
         this.play();
+    }
+
+    private get formattedTime(): string {
+        if (!this.time) return '';
+
+        const hour = Math.floor(this.time);
+        const min = Math.floor((this.time - hour) * 60);
+        const sec = Math.floor(((this.time - hour) * 60 - min) * 60);
+        const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
+
+        return `${pad(hour)}:${pad(min)}:${pad(sec)}`;
     }
 }
 </script>

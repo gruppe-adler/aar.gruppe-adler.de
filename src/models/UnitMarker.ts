@@ -1,6 +1,7 @@
 import { Marker, DomUtil, DivIcon } from 'leaflet';
 import { armaToLatLng } from '@/MapUtils';
 import { Record} from '@/Models/';
+import { COLORS } from '@/ApiUtils';
 
 export class UnitIcon extends DivIcon {
     private color: string;
@@ -11,7 +12,7 @@ export class UnitIcon extends DivIcon {
      * @param {LatLng} pos Position
      * @param {Number} dir Direction (Heading from north)
      */
-    constructor(colorId?: number, icon?: string, text?: string, direction?: number) {
+    constructor(color?: string, icon?: string, text?: string, direction?: number) {
 
         const options: {
             iconUrl: string,
@@ -26,23 +27,10 @@ export class UnitIcon extends DivIcon {
         this.text = text || '';
         this.direction = direction || 0;
 
-        if (colorId === undefined) {
+        if (color === undefined) {
             this.color = 'white';
         } else {
-            this.color = [
-                'rgba(0,76,153,1)',          // 0: WEST
-                'rgba(127,0,0,1)',            // 1: EAST
-                'rgba(0,127,0,1)',            // 2: INDEPENDENT
-                'rgba(102,0,127,1)',          // 3: CIVILIAN
-                'rgba(178,153,0,1)',          // 4: SIDEEMPTY
-                'rgba(0,76,153,127)',        // 5: WEST unconscious
-                'rgba(127,0,0,127)',          // 6: EAST unconscious
-                'rgba(0,127,0,127)',          // 7: INDEPENDENT unconscious
-                'rgba(102,0,127,127)',        // 8: CIVILIAN unconscious
-                'rgba(178,153,0,127)',        // 9: SIDEEMPTY unconscious
-                'rgba(51,51,51,127)',      // 10: dead unit
-                'rgba(1,0,0,1)'               // 11: funkwagen-red when sending, speciality for "breaking contact"
-            ][colorId];
+            this.color = color;
         }
 
     }
@@ -97,8 +85,8 @@ export class UnitMarker extends Marker {
      * @param {[number, number]} pos Arma Position
      * @param {Number} dir Direction (Heading from north)
      */
-    constructor({icon, colorId, position, direction, name, group}: Record) {
-        const unitIcon = new UnitIcon(colorId, icon, name + group, direction);
+    constructor({icon, color, position, direction, name, group}: Record) {
+        const unitIcon = new UnitIcon(color, icon, name + group, direction);
         super(armaToLatLng(position), { icon: unitIcon });
     }
 }
