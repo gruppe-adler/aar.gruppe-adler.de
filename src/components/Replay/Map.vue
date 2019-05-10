@@ -53,7 +53,6 @@ export default class MapVue extends Vue {
         });
         this.map.setView([0, 0], 0);
 
-        if (this.callback) this.callback(this.map);
 
         return this.map;
     }
@@ -68,7 +67,7 @@ export default class MapVue extends Vue {
     @Watch('worldName')
     private async loadMap() {
         if (! this.worldName) return;
-        const map = this.setupMap();
+        const map = this.map!;
 
         this.loading = true;
 
@@ -93,10 +92,12 @@ export default class MapVue extends Vue {
         map.setMaxBounds( this.maxBounds.pad(0.05) );
 
         this.loading = false;
+
+        if (this.callback) this.callback(map);
     }
 
     @Watch('selectedBasemap')
-    private changeLayer() {
+    private changeBasemap() {
 
         if (!this.selectedBasemap) return;
         if (!this.map) return;
@@ -158,7 +159,7 @@ export default class MapVue extends Vue {
     grid-template-columns: auto 1fr auto auto;
     grid-template-rows: auto auto 1fr;
     grid-template-areas: 
-    ". . coords layers"
+    "title . coords layers"
     ". . . locations"
     ". . . .";
 

@@ -6,7 +6,8 @@
             </div>
 
             <md-field md-clearable class="md-toolbar-section-end">
-                <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
+                <md-icon>search</md-icon>
+                <md-input v-model="search" @input="searchOnTable" />
             </md-field>
         </md-table-toolbar>
 
@@ -20,8 +21,8 @@
         <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
             <md-table-cell md-label="Name" md-sort-by="missionName">{{ item.missionName }}</md-table-cell>
-            <md-table-cell md-label="Date" md-sort-by="date">{{ item.date }}</md-table-cell>
-            <md-table-cell md-label="Duration" md-sort-by="duration">{{ item.duration }}</md-table-cell>
+            <md-table-cell md-label="Date" md-sort-by="date">{{ date(item.date) }}</md-table-cell>
+            <md-table-cell md-label="Duration" md-sort-by="duration">{{ duration(item.duration) }}</md-table-cell>
             <md-table-cell md-label="Map" md-sort-by="worldName">{{ item.worldName }}</md-table-cell>
             <md-table-cell >
                 <md-button class="md-icon-button md-primary md-dense" @click="selectReplay(item)">
@@ -63,6 +64,29 @@ export default class ReplaysVue extends Vue {
 
     private selectReplay(replay: Replay) {
         this.$router.push(`/replay/${replay.id}`);
+    }
+
+    /**
+     * This function turns a date to a nicley formatted string
+     * @param {Date} d Date
+     * @returns {string} Formatted date
+     */
+    private date(d: Date): string {
+        const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
+        const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        return `${date} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    /**
+     * This function turns a number of seconds to a nicley formatted duration
+     * @param {number} sec Number of seconds
+     * @returns {string} Formatted duration
+     */
+    private duration(sec: number): string {
+        const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
+        const minutes = Math.floor(sec / 60);
+
+        return `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
     }
 }
 </script>

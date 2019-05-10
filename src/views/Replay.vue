@@ -1,30 +1,32 @@
 <template>
     <div class="grad-replay">
-        <Map :worldName="replay.worldName" :callback="mapCallback">
+        <Map v-if="replay" :worldName="replay.worldName" :callback="mapCallback">
             <template v-slot="{ map, metaData, layer, selectBasemap }">
                 <Layers :metaData="metaData" v-model="layer" :select="selectBasemap" />
                 <CoordsDisplay :map="map" :metaData="metaData" />
                 <Locations :map="map" :metaData="metaData" />
+                <Title>{{replay.missionName}} ({{date}})</Title>
             </template>
         </Map>
-        <!-- <div class="grad-replay__top">
-            <Title>{{replay.missionName}} - {{replay.date}}</Title>
+        <Controls v-if="replay && replay.data" :max="replay.data.length" v-model="frame" />
+        <div v-if="loading" class="grad-replay__loading">
+            <md-progress-spinner class="grad-map__loader" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
         </div>
-        <Controls :max="200" v-model="frame" /> -->
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
-import { Map, LeafletMouseEvent, LeafletEvent, LatLng } from 'leaflet';
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
+import { Map, LeafletMouseEvent, LeafletEvent, LatLng, LayerGroup } from 'leaflet';
 
 import MapVue from '@/components/Replay/Map.vue';
 import CoordsDisplayVue from '@/components/Replay/CoordsDisplay.vue';
 import ControlsVue from '@/components/Replay/Controls.vue';
 import TitleVue from '@/components/Replay/Title.vue';
 import LayersVue from '@/components/Replay/Layers.vue';
-import { Replay } from '../models';
+import { Replay, UnitMarker, Record } from '../models';
 import LocationsVue from '@/components/Replay/Locations.vue';
+import { fetchReplay } from '../ApiUtils';
 
 @Component({
     components: {
@@ -37,29 +39,65 @@ import LocationsVue from '@/components/Replay/Locations.vue';
     }
 })
 export default class ReplayVue extends Vue {
-    private replay: Replay = {
-        id: 1,
-        missionName: 'Breaking Contact',
-        date: new Date(),
-        duration: 0,
-        worldName: 'Stratis'
-    };
-    private map?: Map;
+    @Prop() private id?: number;
+    private replay: Replay|null = null;
     private frame: number = 1;
+    private loading: boolean = true;
+    private drawnLayer: LayerGroup|null = null;
+    private map: Map|null = null;
+    private layerGroups: LayerGroup[] = [];
 
     private mounted() {
+        this.load();
+    }
+
+    private async load() {
+        if (!this.id) return;
+
+        try {
+            this.replay = await fetchReplay(this.id);
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+
         if (this.$route.query.frame) {
             this.frame = parseInt(this.$route.query.frame as string, 10);
         }
+
+        this.layerGroups = this.replay!.data!.map(f  =>  new LayerGroup(f.data.map(record => new UnitMarker(record))));
+
+        this.loading = false;
     }
 
     private mapCallback(map: Map) {
         this.map = map;
+        this.createIcons();
     }
 
     @Watch('frame')
-    private valueChanged() {
+    private updateFrameUrlParam() {
+        this.createIcons();
         this.$router.push({ query: { frame: this.frame.toString() }});
+    }
+
+    private async createIcons() {
+        if (!this.map) return;
+
+        if (this.frame < 0 || this.frame > this.layerGroups.length - 1) return;
+
+        const oldLayer = this.drawnLayer;
+        this.drawnLayer = this.layerGroups[this.frame];
+        this.drawnLayer.addTo(this.map);
+        if (oldLayer) oldLayer.removeFrom(this.map);
+    }
+
+    private get date(): string {
+        if (!this.replay) return '';
+        const d = this.replay.date;
+        const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
+        const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        return `${date} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 }
 </script>
@@ -75,14 +113,16 @@ export default class ReplayVue extends Vue {
     align-items: center;
 }
 
-.grad-replay__top {
+.grad-replay__loading {
     position: absolute;
     top: 0px;
     left: 0px;
-    right: 0px;
+    background-color: rgba(255,255,255,0.8);
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    justify-content: center;
 }
 </style>

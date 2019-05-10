@@ -31,8 +31,7 @@ export default new Router({
         },
         {
             path: '/replays',
-            component: () => import('@/views/Replays.vue'),
-            props: true
+            component: () => import('@/views/Replays.vue')
         }
     ]
 });

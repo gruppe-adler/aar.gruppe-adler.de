@@ -1,9 +1,9 @@
 export default interface Record {
     icon: string;
-    color: string;
-    position: number[];
+    colorId: number;
+    position: [number, number];
     direction: number;
     name: string;
     group: string;
-    target: number[];
+    target?: [number, number];
 }
