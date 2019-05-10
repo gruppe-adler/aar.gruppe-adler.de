@@ -15,7 +15,8 @@ import {
     MdEmptyState,
     MdCard,
     MdContent,
-    MdRipple
+    MdRipple,
+    MdAvatar
 // @ts-ignore
 } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
@@ -32,6 +33,7 @@ Vue.use(MdEmptyState);
 Vue.use(MdCard);
 Vue.use(MdContent);
 Vue.use(MdRipple);
+Vue.use(MdAvatar);
 
 
 Vue.config.productionTip = false;

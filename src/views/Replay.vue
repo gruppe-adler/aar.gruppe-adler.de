@@ -1,11 +1,16 @@
 <template>
     <div class="grad-replay">
-        <Map :worldName="replay.worldName" :callback="mapCallback" />
-        <div class="grad-replay__top">
+        <Map :worldName="replay.worldName" :callback="mapCallback">
+            <template v-slot="{ map, metaData, layer, selectBasemap }">
+                <Layers :metaData="metaData" v-model="layer" :select="selectBasemap" />
+                <CoordsDisplay :map="map" :metaData="metaData" />
+                <Locations :map="map" :metaData="metaData" />
+            </template>
+        </Map>
+        <!-- <div class="grad-replay__top">
             <Title>{{replay.missionName}} - {{replay.date}}</Title>
-            <CoordsDisplay v-if="coords" :coords="coords" />
         </div>
-        <Controls :max="200" v-model="frame" />
+        <Controls :max="200" v-model="frame" /> -->
     </div>
 </template>
 
@@ -17,10 +22,19 @@ import MapVue from '@/components/Replay/Map.vue';
 import CoordsDisplayVue from '@/components/Replay/CoordsDisplay.vue';
 import ControlsVue from '@/components/Replay/Controls.vue';
 import TitleVue from '@/components/Replay/Title.vue';
+import LayersVue from '@/components/Replay/Layers.vue';
 import { Replay } from '../models';
+import LocationsVue from '@/components/Replay/Locations.vue';
 
 @Component({
-    components: { Map: MapVue, Controls: ControlsVue, CoordsDisplay: CoordsDisplayVue, Title: TitleVue }
+    components: {
+        Map: MapVue,
+        Layers: LayersVue,
+        Controls: ControlsVue,
+        CoordsDisplay: CoordsDisplayVue,
+        Title: TitleVue,
+        Locations: LocationsVue
+    }
 })
 export default class ReplayVue extends Vue {
     private replay: Replay = {
@@ -28,11 +42,10 @@ export default class ReplayVue extends Vue {
         missionName: 'Breaking Contact',
         date: new Date(),
         duration: 0,
-        worldName: 'stratis'
+        worldName: 'Stratis'
     };
     private map?: Map;
     private frame: number = 1;
-    private coords?: LatLng|null = null;
 
     private mounted() {
         if (this.$route.query.frame) {
@@ -42,8 +55,6 @@ export default class ReplayVue extends Vue {
 
     private mapCallback(map: Map) {
         this.map = map;
-
-        map.on('mousemove', (event: LeafletEvent) => this.coords = (event as LeafletMouseEvent).latlng);
     }
 
     @Watch('frame')

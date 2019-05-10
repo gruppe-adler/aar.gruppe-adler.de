@@ -1,8 +1,11 @@
 <template>
-    <div>
+    <div class="grad-map__wrapper">
         <div class="grad-map" ref="map"></div>
-        <md-progress-spinner v-if="loading" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+        <md-progress-spinner class="grad-map__loader" v-if="loading" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
         <span v-if="error !== ''">{{error}}</span>
+        <div class="grad-map-ui" v-if="metaData && map && selectedBasemap">
+            <slot :map="map" :metaData="metaData" :layer="selectedBasemap" :selectBasemap="selectBasemap"></slot>
+        </div>
     </div>
 </template>
 
@@ -12,16 +15,19 @@ import { Map, CRS, LatLngBounds } from 'leaflet';
 import { BASE_URL, fetchMapMetaData } from '@/ApiUtils';
 import { MapMetaData, ArmaTileLayer } from '@/models';
 import 'leaflet/dist/leaflet.css';
-
-const POS_FACTOR = 100;
+import { Layer } from '../../models/MapMetaData';
+import { armaToLatLng } from '@/MapUtils';
 
 @Component
 export default class MapVue extends Vue {
     @Prop() private worldName?: string;
     @Prop() private callback?: (map: Map) => any;
 
-    private map?: Map;
-    private metaData?: MapMetaData;
+    private map: Map|null = null;
+    private tileLayer?: ArmaTileLayer;
+    private metaData: MapMetaData|null = null;
+    private selectedBasemap: Layer|null = null;
+    private maxBounds?: LatLngBounds;
     private loading: boolean = true;
     private error: string = '';
 
@@ -52,6 +58,10 @@ export default class MapVue extends Vue {
         return this.map;
     }
 
+    private selectBasemap(l: Layer) {
+        this.selectedBasemap = l;
+    }
+
     /**
      * This methods handles the map initialization (Adding correct base layer, setting bounds, setting extent etc.)
      */
@@ -70,26 +80,41 @@ export default class MapVue extends Vue {
             return;
         }
 
-        const size = this.metaData.worldSize / POS_FACTOR;
-        const bounds = new LatLngBounds([0, 0], [size, size]);
+        this.maxBounds = new LatLngBounds([0, 0], armaToLatLng([this.metaData.worldSize, this.metaData.worldSize]));
 
         // remove all previos layers
         map.eachLayer(layer => map.removeLayer(layer));
 
-        new ArmaTileLayer(`${BASE_URL}/${this.worldName}/{z}/{y}/{x}.png`, this.metaData.worldSize, {
-            errorTileUrl: `${BASE_URL}/error/100m.png`,
-            maxNativeZoom: this.metaData.maxZoom,
-            minNativeZoom: this.metaData.minZoom,
-            noWrap: true,
-            bounds
-        }).addTo(map);
+        this.selectedBasemap = this.metaData.layers[0];
 
-        map.fitBounds(bounds);
+        map.fitBounds(this.maxBounds);
 
         // add a little bit to max bound to let the map not end directly with the last tile
-        map.setMaxBounds( bounds.pad(0.05) );
+        map.setMaxBounds( this.maxBounds.pad(0.05) );
 
         this.loading = false;
+    }
+
+    @Watch('selectedBasemap')
+    private changeLayer() {
+
+        if (!this.selectedBasemap) return;
+        if (!this.map) return;
+        if (!this.metaData) return;
+
+        if (this.tileLayer) this.tileLayer.remove();
+
+        this.tileLayer = new ArmaTileLayer(
+            `${BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{y}/{x}.png`,
+            this.metaData.worldSize,
+            {
+                errorTileUrl: `${BASE_URL}/error/100m.png`,
+                maxNativeZoom: this.metaData.maxZoom,
+                minNativeZoom: this.metaData.minZoom,
+                noWrap: true,
+                bounds: this.maxBounds
+            }
+        ).addTo(this.map);
     }
 
 }
@@ -97,18 +122,48 @@ export default class MapVue extends Vue {
 
 <style lang="scss" scoped>
 
-div {
-    position: absolute;
+.grad-map__wrapper {
+    overflow: hidden;
+    position: relative;
+    display: flex;
     z-index: 0;
     height: 100vh;
     width: 100vw;
-    display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+}
 
-    span {
-        z-index: 1000;
+.grad-map {
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    width: 100vw;
+}
+
+.grad-map-ui {
+    position: absolute;
+    display: grid;
+    z-index: 0;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    pointer-events: none;
+    justify-items: center;
+    align-items: center;
+    grid-gap: 10px;
+    margin: 10px;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 
+    ". . coords layers"
+    ". . . locations"
+    ". . . .";
+
+    > * {
+        pointer-events: all;
     }
 }
 </style>
