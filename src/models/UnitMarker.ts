@@ -1,7 +1,6 @@
 import { Marker, DomUtil, DivIcon } from 'leaflet';
 import { armaToLatLng } from '@/MapUtils';
-import { Record} from '@/Models/';
-import { COLORS } from '@/ApiUtils';
+import { Record} from '@/models/';
 
 export class UnitIcon extends DivIcon {
     private color: string;
