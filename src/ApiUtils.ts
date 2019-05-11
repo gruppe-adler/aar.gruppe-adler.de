@@ -72,17 +72,17 @@ export async function fetchReplay(id: number): Promise<Replay|null> {
 
 
 export const COLORS = [
-    'rgba(0,76,153,1)',          // 0: WEST
+    'rgba(0,76,153,1)',           // 0: WEST
     'rgba(127,0,0,1)',            // 1: EAST
     'rgba(0,127,0,1)',            // 2: INDEPENDENT
     'rgba(102,0,127,1)',          // 3: CIVILIAN
     'rgba(178,153,0,1)',          // 4: SIDEEMPTY
-    'rgba(0,76,153,127)',        // 5: WEST unconscious
+    'rgba(0,76,153,127)',         // 5: WEST unconscious
     'rgba(127,0,0,127)',          // 6: EAST unconscious
     'rgba(0,127,0,127)',          // 7: INDEPENDENT unconscious
     'rgba(102,0,127,127)',        // 8: CIVILIAN unconscious
     'rgba(178,153,0,127)',        // 9: SIDEEMPTY unconscious
-    'rgba(51,51,51,127)',      // 10: dead unit
+    'rgba(51,51,51,127)',         // 10: dead unit
     'rgba(1,0,0,1)'               // 11: funkwagen-red when sending, speciality for "breaking contact"
 ];
 
