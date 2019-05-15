@@ -19,7 +19,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
-import { BASE_URL, fetchMapMetaData } from '@/ApiUtils';
+import { API_BASE_URL, fetchMapMetaData } from '@/ApiUtils';
 import { MapMetaData } from '@/models';
 import { Layer } from '@/models/MapMetaData';
 
@@ -31,7 +31,7 @@ export default class LayersVue extends Vue {
 
     private pictureUrl(layer: Layer): string {
         if (!this.metaData) return '';
-        return `${BASE_URL}/${this.metaData.worldName}/${layer.path}thumbnail.png`;
+        return `${API_BASE_URL}/${this.metaData.worldName}/${layer.path}thumbnail.png`;
     }
 }
 </script>

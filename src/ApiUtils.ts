@@ -1,7 +1,7 @@
 import { MapMetaData, Replay } from './models';
 import rp from 'request-promise';
 
-export const BASE_URL = 'http://maps.gruppe-adler.de';
+export const API_BASE_URL = 'https://maps.gruppe-adler.de';
 
 const mapMetaDataCache: { [index: string]: MapMetaData } = {};
 
@@ -13,7 +13,7 @@ export async function fetchMapMetaData(mapName: string): Promise<MapMetaData> {
     }
 
     // make http request
-    const res = await rp(`${BASE_URL}/${mapName}/meta.json`);
+    const res = await rp(`${API_BASE_URL}/${mapName}/meta.json`);
 
     // parse response if necessary
     if (typeof res === 'string') {
