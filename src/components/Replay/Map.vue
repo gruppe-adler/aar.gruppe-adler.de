@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import { Map, CRS, LatLngBounds } from 'leaflet';
-import { BASE_URL, fetchMapMetaData } from '@/ApiUtils';
+import { API_BASE_URL, fetchMapMetaData } from '@/ApiUtils';
 import { MapMetaData, ArmaTileLayer } from '@/models';
 import 'leaflet/dist/leaflet.css';
 import { Layer } from '../../models/MapMetaData';
@@ -106,10 +106,10 @@ export default class MapVue extends Vue {
         if (this.tileLayer) this.tileLayer.remove();
 
         this.tileLayer = new ArmaTileLayer(
-            `${BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{x}/{y}.png`,
+            `${API_BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{x}/{y}.png`,
             this.metaData.worldSize,
             {
-                errorTileUrl: `${BASE_URL}/error/100m.png`,
+                errorTileUrl: `${API_BASE_URL}/error/100m.png`,
                 maxNativeZoom: this.metaData.maxZoom,
                 minNativeZoom: this.metaData.minZoom,
                 noWrap: true,
