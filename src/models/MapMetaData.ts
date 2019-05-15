@@ -13,8 +13,8 @@ export default interface MapMetaData {
     grid: { offsetX: number, offsetY: number };
     layers: Layer[];
     locations: Location[];
-    minZoom: number;
-    maxZoom: number;
+    minLod: number;
+    maxLod: number;
     worldName: string;
     worldSize: number;
 }

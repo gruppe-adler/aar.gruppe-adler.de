@@ -109,9 +109,8 @@ export default class MapVue extends Vue {
             `${API_BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{x}/{y}.png`,
             this.metaData.worldSize,
             {
-                errorTileUrl: `${API_BASE_URL}/error/100m.png`,
-                maxNativeZoom: this.metaData.maxZoom,
-                minNativeZoom: this.metaData.minZoom,
+                maxNativeZoom: this.metaData.maxLod,
+                minNativeZoom: this.metaData.minLod,
                 noWrap: true,
                 bounds: this.maxBounds
             }
