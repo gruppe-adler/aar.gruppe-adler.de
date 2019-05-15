@@ -48,7 +48,7 @@ export async function fetchReplay(id: number): Promise<Replay|null> {
             data: item.map(record => {
                 const r = record as [string, number, [number, number], number, string, string, [number, number]|[]];
                 return {
-                    icon: r[0] || 'icon',
+                    icon: r[0].toLowerCase() || 'iconman',
                     color: COLORS[r[1]],
                     position: r[2],
                     direction: r[3],
