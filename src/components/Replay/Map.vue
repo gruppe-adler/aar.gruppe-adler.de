@@ -106,7 +106,7 @@ export default class MapVue extends Vue {
         if (this.tileLayer) this.tileLayer.remove();
 
         this.tileLayer = new ArmaTileLayer(
-            `${BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{y}/{x}.png`,
+            `${BASE_URL}/${this.worldName}/${this.selectedBasemap.path}{z}/{x}/{y}.png`,
             this.metaData.worldSize,
             {
                 errorTileUrl: `${BASE_URL}/error/100m.png`,

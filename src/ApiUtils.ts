@@ -1,7 +1,7 @@
 import { MapMetaData, Replay } from './models';
 import rp from 'request-promise';
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://maps.gruppe-adler.de';
 
 const mapMetaDataCache: { [index: string]: MapMetaData } = {};
 
