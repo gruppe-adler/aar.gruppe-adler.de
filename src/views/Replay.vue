@@ -56,6 +56,15 @@ export default class ReplayVue extends Vue {
 
     private mounted() {
         this.load();
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
+    }
+
+    /**
+     * Why this? Well the timeline control is hidden below the fucking bar on mobile devices with chrome.
+     */
+    private onWindowResize() {
+        (document.querySelector('.grad-replay') as HTMLDivElement).style.maxHeight = `${window.innerHeight}px`;
     }
 
     private async load() {
@@ -129,6 +138,25 @@ export default class ReplayVue extends Vue {
 </script>
 
 <style lang="scss">
+.grad-replay {
+    position: relative;
+
+    &__loading,
+    &__error {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        background-color: rgba(255,255,255,0.8);
+        z-index: 100;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
 .grad--group {
     border-radius: 2px;
     background-color: white;
@@ -137,20 +165,5 @@ export default class ReplayVue extends Vue {
     padding: 5px;
     display: flex;
     align-items: center;
-}
-
-.grad-replay__loading,
-.grad-replay__error {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background-color: rgba(255,255,255,0.8);
-    z-index: 100;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 </style>
