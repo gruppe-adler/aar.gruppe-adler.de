@@ -76,11 +76,7 @@ export default class ReplaysVue extends Vue {
      * @param {Date} d Date
      * @returns {string} Formatted date
      */
-    private date(d: Date|string): string {
-
-        if (typeof d === 'string') {
-            d = new Date(d);
-        }
+    private date(d: Date): string {
 
         const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
         const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;

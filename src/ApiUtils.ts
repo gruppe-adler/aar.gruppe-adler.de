@@ -30,25 +30,27 @@ export async function fetchReplays(): Promise<Replay[]> {
     const res = await rp(`${API_BASE_URL}/`);
 
     // parse response if necessary
-    if (typeof res === 'string') {
-        return JSON.parse(res as string);
-    }
+    let replays: Replay[] = typeof res === 'string' ? JSON.parse(res) : res;
 
-    return res;
+    // date of replays is a string
+    replays = replays.map(r => ({...r, date: new Date(r.date) }));
+
+    return replays;
 }
 
 export async function fetchReplay(id: number): Promise<Replay|null> {
 
     // make http request
-    let res = await rp(`${API_BASE_URL}/${id}`);
+    const res = await rp(`${API_BASE_URL}/${id}`);
 
     // parse response if necessary
-    if (typeof res === 'string') {
-        res = JSON.parse(res as string);
-    }
+    const replay: Replay = typeof res === 'string' ? JSON.parse(res) : res;
 
-    const data = res.data.map(
-    (item: Array<[string, number, [number, number], number, string, string, [number, number]|[]]|number>) => ({
+    // date of replays is a string
+    replay.date = new Date(replay.date);
+
+    // tslint:disable-next-line:max-line-length
+    replay.data = (replay.data as any).map((item: Array<[string, number, [number, number], number, string, string, [number, number]|[]]|number>) => ({
             time: (item.splice(-1, 1) as number[])[0],
             data: item.map(record => { // tslint:disable-line:max-line-length
                 record = record as [string, number, [number, number], number, string, string, [number, number]|[]];
@@ -65,10 +67,7 @@ export async function fetchReplay(id: number): Promise<Replay|null> {
             })
     }));
 
-    return {
-        ...res,
-        data
-    };
+    return replay;
 }
 
 
