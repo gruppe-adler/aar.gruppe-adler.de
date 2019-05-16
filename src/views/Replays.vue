@@ -54,7 +54,10 @@ export default class ReplaysVue extends Vue {
     }
 
     private async load() {
-        this.replays = await fetchReplays();
+        const replays = await fetchReplays();
+
+        this.replays = replays.sort((a, b) => (b.date.getMilliseconds() - a.date.getMilliseconds()));
+
         this.searchOnTable();
     }
 
