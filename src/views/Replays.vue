@@ -22,6 +22,7 @@
             md-icon="sentiment_dissatisfied"
             md-label="Keine Replays gefunden"
             md-description="Es konnten keine Replays geladen werden">
+            <md-button class="md-primary md-raised">Reload</md-button>
         </md-table-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }">
