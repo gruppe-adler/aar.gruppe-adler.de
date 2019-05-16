@@ -5,5 +5,5 @@ export default interface Record {
     direction: number;
     name: string;
     group: string;
-    target: [number, number]|[];
+    target: [number, number];
 }
