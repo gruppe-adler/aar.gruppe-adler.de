@@ -12,23 +12,28 @@
         </md-table-toolbar>
 
         <md-table-empty-state
+            v-if="search !== ''"
             md-icon="sentiment_dissatisfied"
-            md-label="No users found"
-            :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`">
-            <md-button class="md-primary md-raised">Create New User</md-button>
+            md-label="Keine Replays gefunden"
+            :md-description="`Kein Replay für die Suche '${search}' gefunden.`">
+        </md-table-empty-state>
+        <md-table-empty-state
+            v-else
+            md-icon="sentiment_dissatisfied"
+            md-label="Keine Replays gefunden"
+            md-description="Es konnten keine Replays geladen werden">
         </md-table-empty-state>
 
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{ item.id }}</md-table-cell>
-            <md-table-cell md-label="Name" md-sort-by="missionName">{{ item.missionName }}</md-table-cell>
-            <md-table-cell md-label="Date" md-sort-by="date">{{ date(item.date) }}</md-table-cell>
-            <md-table-cell md-label="Duration" md-sort-by="duration">{{ duration(item.duration) }}</md-table-cell>
-            <md-table-cell md-label="Map" md-sort-by="worldName">{{ item.worldName }}</md-table-cell>
             <md-table-cell >
                 <md-button class="md-icon-button md-primary md-dense" @click="selectReplay(item)">
                     <md-icon>play_arrow</md-icon>
                 </md-button>
             </md-table-cell>
+            <md-table-cell md-label="Name" md-sort-by="missionName">{{ item.missionName }}</md-table-cell>
+            <md-table-cell md-label="Date" md-sort-by="date">{{ date(item.date) }}</md-table-cell>
+            <md-table-cell md-label="Duration" md-sort-by="duration">{{ duration(item.duration) }}</md-table-cell>
+            <md-table-cell md-label="Map" md-sort-by="worldName">{{ item.worldName }}</md-table-cell>
         </md-table-row>
     </md-table>
 </template>
@@ -71,7 +76,12 @@ export default class ReplaysVue extends Vue {
      * @param {Date} d Date
      * @returns {string} Formatted date
      */
-    private date(d: Date): string {
+    private date(d: Date|string): string {
+
+        if (typeof d === 'string') {
+            d = new Date(d);
+        }
+
         const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
         const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         return `${date} ${pad(d.getHours())}:${pad(d.getMinutes())}`;

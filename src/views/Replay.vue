@@ -10,7 +10,13 @@
         </Map>
         <Controls v-if="replay && replay.data" :max="replay.data.length" :time="replay.data[frame].time" v-model="frame" />
         <div v-if="loading" class="grad-replay__loading">
-            <md-progress-spinner class="grad-map__loader" :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+            <md-progress-spinner :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
+        </div>
+        <div v-if="!loading && !replay" class="grad-replay__error">
+            Replay konnte nicht geladen werden. <br/> Klicke hier um es erneut zu probieren:
+            <md-button @click="load" class="md-icon-button md-primary">
+                <md-icon>refresh</md-icon>
+            </md-button>
         </div>
     </div>
 </template>
@@ -55,6 +61,8 @@ export default class ReplayVue extends Vue {
     private async load() {
         if (!this.id) return;
 
+        this.loading = true;
+
         try {
             this.replay = await fetchReplay(this.id);
         } catch (err) {
@@ -67,14 +75,14 @@ export default class ReplayVue extends Vue {
             this.frame = parseInt(this.$route.query.frame as string, 10);
         }
 
-        this.layerGroups = this.replay!.data!.map(f  => {
+        this.layerGroups = this.replay!.data!.map(frame  => {
             const pewPew: Polyline[] = [];
             const unitMarkers: UnitMarker[] = [];
 
-            f.data.forEach(record => {
+            frame.data.forEach(record => {
                 unitMarkers.push(new UnitMarker(record));
 
-                if (record.target && record.target.length > 0) {
+                if (record.target.length > 0) {
                     pewPew.push(new Polyline(
                         [armaToLatLng(record.position), armaToLatLng(record.target)],
                         { color: record.color, weight: 2, opacity: 0.5 }
@@ -131,7 +139,8 @@ export default class ReplayVue extends Vue {
     align-items: center;
 }
 
-.grad-replay__loading {
+.grad-replay__loading,
+.grad-replay__error {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -140,6 +149,7 @@ export default class ReplayVue extends Vue {
     width: 100vw;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
