@@ -18,12 +18,8 @@ export default new Router({
         },
         {
             path: '/',
-            redirect: '/replay/0'
+            redirect: '/replays'
         },
-        // {
-        //   path: '/home/alles',
-        //   component: import('@/views/404.vue')
-        // }
         {
             path: '/replay/:id',
             component: () => import('@/views/Replay.vue'),

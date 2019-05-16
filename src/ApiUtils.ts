@@ -1,7 +1,8 @@
 import { MapMetaData, Replay } from './models';
 import rp from 'request-promise';
 
-export const API_BASE_URL = 'https://maps.gruppe-adler.de';
+export const WMTS_BASE_URL = 'https://maps.gruppe-adler.de';
+export const API_BASE_URL = 'https://replay.gruppe-adler.de';
 
 const mapMetaDataCache: { [index: string]: MapMetaData } = {};
 
@@ -13,7 +14,7 @@ export async function fetchMapMetaData(mapName: string): Promise<MapMetaData> {
     }
 
     // make http request
-    const res = await rp(`${API_BASE_URL}/${mapName}/meta.json`);
+    const res = await rp(`${WMTS_BASE_URL}/${mapName}/meta.json`);
 
     // parse response if necessary
     if (typeof res === 'string') {
@@ -24,28 +25,32 @@ export async function fetchMapMetaData(mapName: string): Promise<MapMetaData> {
 }
 
 export async function fetchReplays(): Promise<Replay[]> {
-    return [
-        {
-            id: 10,
-            missionName: 'Hold the line!',
-            date: new Date(),
-            duration: 5400,
-            worldName: 'tembelan'
-        },
-        {
-            id: 9,
-            missionName: 'Green Mountain',
-            date: new Date(),
-            duration: 5600,
-            worldName: 'Malden2035'
-        }
-    ];
+
+    // make http request
+    const res = await rp(`${API_BASE_URL}/`);
+
+    // parse response if necessary
+    if (typeof res === 'string') {
+        return JSON.parse(res as string);
+    }
+
+    return res;
 }
+
 export async function fetchReplay(id: number): Promise<Replay|null> {
-    const data = data1.map(item => {
+
+    // make http request
+    let res = await rp(`${API_BASE_URL}/${id}`);
+
+    // parse response if necessary
+    if (typeof res === 'string') {
+        res = JSON.parse(res as string);
+    }
+
+    const data = res.data.map((item: any) => {
         return {
             time: (item.splice(-1, 1) as number[])[0],
-            data: item.map(record => {
+            data: item.map((record: any) => {
                 const r = record as [string, number, [number, number], number, string, string, [number, number]|[]];
                 return {
                     icon: r[0].toLowerCase() || 'iconman',
@@ -61,11 +66,7 @@ export async function fetchReplay(id: number): Promise<Replay|null> {
     });
 
     return {
-        id,
-        missionName: 'Breaking Contact',
-        date: new Date(),
-        duration: 100,
-        worldName: 'Stratis',
+        ...res,
         data
     };
 }

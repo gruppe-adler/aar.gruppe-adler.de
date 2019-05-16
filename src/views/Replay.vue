@@ -58,6 +58,7 @@ export default class ReplayVue extends Vue {
         try {
             this.replay = await fetchReplay(this.id);
         } catch (err) {
+            this.loading = false;
             console.error(err);
             return;
         }
