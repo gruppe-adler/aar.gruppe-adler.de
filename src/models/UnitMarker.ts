@@ -17,7 +17,7 @@ export class UnitIcon extends DivIcon {
             iconUrl: string,
             iconSize: [number, number]
         } = {
-            iconUrl: `${process.env.BASE_URL || '/'}icons/${icon || 'iconman'}.png`,
+            iconUrl: `${process.env.BASE_URL || '/'}icons/${(icon || 'iconman').toLowerCase()}.png`,
             iconSize: [24, 24]
         };
 
