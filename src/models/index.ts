@@ -1,15 +1,14 @@
 import MapMetaData from './MapMetaData';
 import ArmaTileLayer from './ArmaTileLayer';
 import Replay from './Replay';
-import Frame from './Frame';
-import Record from './Record';
 import { UnitMarker } from './UnitMarker';
+import { ReplayFrame, ReplayRecord } from './ReplayData';
 
 export {
     ArmaTileLayer,
     Replay,
     MapMetaData,
-    Record,
-    Frame,
-    UnitMarker
+    UnitMarker,
+    ReplayRecord,
+    ReplayFrame
 };

@@ -5,9 +5,7 @@
             <md-icon v-else-if="frame === max">replay</md-icon>
             <md-icon v-else>play_arrow</md-icon>
         </md-button>
-        <!-- <i v-if="!" @click="play" class="material-icons">play_arrow</i>
-        <i v-else @click="pause" class="material-icons">pause</i> -->
-        <input type="range" min="1" :max="max" v-model="frame">
+        <input type="range" min="0" :max="max" v-model="frame">
 
         <md-menu md-direction="top-start" :mdCloseOnClick="true" :mdCloseOnSelect="true" md-size="small">
             <div md-menu-trigger style="display: flex; align-items: center;">
@@ -26,7 +24,7 @@
                 </md-menu-item>
             </md-menu-content>
         </md-menu>
-        <span>{{formattedTime}}</span>
+        <span>{{time}}</span>
     </div>
 </template>
 
@@ -37,7 +35,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 export default class ControlsVue extends Vue {
     @Prop({ default: 100 }) private max?: number;
     @Prop({ default: 0, type: Number }) private value?: number;
-    @Prop({ default: 0, type: Number }) private time?: number;
+    @Prop({ default: 0 }) private time?: number;
 
     private isPlaying: boolean = false;
     private interval?: number;
@@ -81,7 +79,7 @@ export default class ControlsVue extends Vue {
 
         if (this.frame === this.max) {
             // if playback is done start from the beginning
-            this.frame = 1;
+            this.frame = 0;
         } else {
             // instantly jump to next frame so that user has direct feedback
             this.frame++;
@@ -90,7 +88,7 @@ export default class ControlsVue extends Vue {
         this.interval = window.setInterval(() => {
             this.frame++;
 
-            if (this.frame! >= this.max!) {
+            if (this.frame >= this.max!) {
                 this.frame = this.max!;
                 this.pause();
             }
@@ -112,17 +110,6 @@ export default class ControlsVue extends Vue {
 
         this.pause();
         this.play();
-    }
-
-    private get formattedTime(): string {
-        if (!this.time) return '';
-
-        const hour = Math.floor(this.time);
-        const min = Math.floor((this.time - hour) * 60);
-        const sec = Math.floor(((this.time - hour) * 60 - min) * 60);
-        const pad = (num: number): string => (num < 10 ? '0' : '') + num.toString();
-
-        return `${pad(hour)}:${pad(min)}:${pad(sec)}`;
     }
 }
 </script>

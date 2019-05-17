@@ -8,7 +8,7 @@
                 <Title>{{replay.missionName}} ({{date}})</Title>
             </template>
         </Map>
-        <Controls v-if="replay && replay.data" :max="replay.data.length" :time="replay.data[frame].time" v-model="frame" />
+        <Controls v-if="replay && replay.data" :max="replay.data.replay.length - 1" :time="replay.data.replay[frame].time" v-model="frame" />
         <div v-if="loading" class="grad-replay__loading">
             <md-progress-spinner :md-diameter="100" :md-stroke="2" md-mode="indeterminate"></md-progress-spinner>
         </div>
@@ -30,9 +30,9 @@ import CoordsDisplayVue from '@/components/Replay/CoordsDisplay.vue';
 import ControlsVue from '@/components/Replay/Controls.vue';
 import TitleVue from '@/components/Replay/Title.vue';
 import LayersVue from '@/components/Replay/Layers.vue';
-import { Replay, UnitMarker, Record } from '../models';
+import { Replay, UnitMarker, ReplayRecord, ReplayFrame } from '../models';
 import LocationsVue from '@/components/Replay/Locations.vue';
-import { fetchReplay, COLORS } from '../ApiUtils';
+import { fetchReplay } from '../ApiUtils';
 import { armaToLatLng } from '../MapUtils';
 
 @Component({
@@ -84,14 +84,16 @@ export default class ReplayVue extends Vue {
             this.frame = parseInt(this.$route.query.frame as string, 10);
         }
 
-        this.layerGroups = this.replay!.data!.map(frame  => {
+        if (! this.replay!.data) return;
+
+        this.layerGroups = this.replay!.data.replay.map((frame: ReplayFrame) => {
             const pewPew: Polyline[] = [];
             const unitMarkers: UnitMarker[] = [];
 
             frame.data.forEach(record => {
                 unitMarkers.push(new UnitMarker(record));
 
-                if (record.target.length > 0) {
+                if (record.target) {
                     pewPew.push(new Polyline(
                         [armaToLatLng(record.position), armaToLatLng(record.target)],
                         { color: record.color, weight: 2, opacity: 0.5 }

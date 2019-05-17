@@ -1,4 +1,4 @@
-import Frame from './Frame';
+import ReplayData from './ReplayData';
 
 export default interface Replay {
     id: number;
@@ -6,5 +6,5 @@ export default interface Replay {
     date: Date;
     duration: number;
     worldName: string;
-    data?: Frame[];
+    data?: ReplayData;
 }

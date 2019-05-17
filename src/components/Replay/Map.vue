@@ -15,7 +15,7 @@ import { Map, CRS, LatLngBounds } from 'leaflet';
 import { WMTS_BASE_URL, fetchMapMetaData } from '@/ApiUtils';
 import { MapMetaData, ArmaTileLayer } from '@/models';
 import 'leaflet/dist/leaflet.css';
-import { Layer } from '../../models/MapMetaData';
+import { Layer } from '@/models/MapMetaData';
 import { armaToLatLng } from '@/MapUtils';
 
 @Component

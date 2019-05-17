@@ -1,6 +1,6 @@
-import { Marker, DomUtil, DivIcon } from 'leaflet';
+import { Marker, DivIcon } from 'leaflet';
 import { armaToLatLng } from '@/MapUtils';
-import { Record} from '@/models/';
+import { ReplayRecord } from './ReplayData';
 
 export class UnitIcon extends DivIcon {
     private color: string;
@@ -84,7 +84,7 @@ export class UnitMarker extends Marker {
      * @param {[number, number]} pos Arma Position
      * @param {Number} dir Direction (Heading from north)
      */
-    constructor({icon, color, position, direction, name, group}: Record) {
+    constructor({icon, color, position, direction, name, group}: ReplayRecord) {
         const unitIcon = new UnitIcon(color, icon, name + group, direction);
         super(armaToLatLng(position), { icon: unitIcon });
     }
