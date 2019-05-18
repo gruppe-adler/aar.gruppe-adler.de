@@ -11,13 +11,13 @@ export class UnitIcon extends DivIcon {
      * @param {LatLng} pos Position
      * @param {Number} dir Direction (Heading from north)
      */
-    constructor(color?: string, icon?: string, text?: string, direction?: number) {
+    constructor(color: string, icon: string, text: string, direction: number) {
 
         const options: {
             iconUrl: string,
             iconSize: [number, number]
         } = {
-            iconUrl: `${process.env.BASE_URL || '/'}icons/${(icon || 'iconman').toLowerCase()}.png`,
+            iconUrl: resolveIconUrl(icon),
             iconSize: [24, 24]
         };
 
@@ -89,3 +89,33 @@ export class UnitMarker extends Marker {
         super(armaToLatLng(position), { icon: unitIcon });
     }
 }
+
+
+
+const resolveIconUrl = (icon: string) => {
+    const base = `${process.env.BASE_URL || '/'}icons/`;
+
+    icon = icon.toLowerCase();
+
+
+    if (icon.match(/^iconman/i)) {
+        return `${base}man/${icon}.png`;
+    }
+
+    const supportedTypes = [
+        'staticmortar',
+        'static',
+        'tank',
+        'helicopter',
+        'car',
+        'plane',
+        'truck',
+        'motorcycle',
+        'ship',
+        'unknown'
+    ];
+
+    if (!supportedTypes.includes(icon)) icon = 'unknown';
+
+    return  `${base}${icon}.png`;
+};
