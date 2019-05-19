@@ -1,5 +1,5 @@
 <template>
-    <md-table v-model="searched" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+    <md-table v-model="searched" md-card md-fixed-header>
         <md-table-toolbar>
             <div class="md-toolbar-section-start">
                 <h1 class="md-title">Replays</h1>
@@ -31,10 +31,10 @@
                     <md-icon>play_arrow</md-icon>
                 </md-button>
             </md-table-cell>
-            <md-table-cell md-label="Name" md-sort-by="missionName">{{ item.missionName }}</md-table-cell>
-            <md-table-cell md-label="Date" md-sort-by="date">{{ date(item.date) }}</md-table-cell>
-            <md-table-cell md-label="Duration" md-sort-by="duration">{{ duration(item.duration) }}</md-table-cell>
-            <md-table-cell md-label="Map" md-sort-by="worldName">{{ item.worldName }}</md-table-cell>
+            <md-table-cell md-label="Name">{{ item.missionName }}</md-table-cell>
+            <md-table-cell md-label="Date">{{ date(item.date) }}</md-table-cell>
+            <md-table-cell md-label="Duration">{{ duration(item.duration) }}</md-table-cell>
+            <md-table-cell md-label="Map">{{ item.worldName }}</md-table-cell>
         </md-table-row>
     </md-table>
 </template>
@@ -57,7 +57,7 @@ export default class ReplaysVue extends Vue {
     private async load() {
         const replays = await fetchReplays();
 
-        this.replays = replays.sort((a, b) => (b.date.getMilliseconds() - a.date.getMilliseconds()));
+        this.replays = replays.sort((a, b) => (b.date.getTime() - a.date.getTime()));
 
         this.searchOnTable();
     }
