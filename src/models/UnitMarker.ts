@@ -49,7 +49,9 @@ export class UnitIcon extends DivIcon {
         wrapper.style.width  = `${size[0]}px`;
         wrapper.style.height = `${size[1]}px`;
 
-        wrapper.style.position = 'relative';
+        wrapper.style.position = 'absolute';
+        wrapper.style.top = '0px';
+        wrapper.style.left = '0px';
         wrapper.style.transformOrigin = 'center';
 
         const icon = document.createElement('div');
