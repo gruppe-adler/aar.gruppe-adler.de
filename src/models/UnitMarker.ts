@@ -109,6 +109,7 @@ const resolveIconUrl = (icon: string) => {
         'static',
         'tank',
         'helicopter',
+        'parachute',
         'car',
         'plane',
         'truck',
