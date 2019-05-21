@@ -87,8 +87,14 @@ export class UnitMarker extends Marker {
      * @param {Number} dir Direction (Heading from north)
      */
     constructor({icon, color, position, direction, name, group}: ReplayRecord) {
+        let opacity = 1;
+
+        if (group === 'unconscious') {
+            group = ' (unconscious)';
+            opacity = 0.5;
+        }
         const unitIcon = new UnitIcon(color, icon, name + group, direction);
-        super(armaToLatLng(position), { icon: unitIcon });
+        super(armaToLatLng(position), { icon: unitIcon, opacity });
     }
 }
 
