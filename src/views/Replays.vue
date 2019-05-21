@@ -1,42 +1,45 @@
 <template>
-    <md-table v-model="searched" md-card md-fixed-header>
-        <md-table-toolbar>
-            <div class="md-toolbar-section-start">
-                <h1 class="md-title">Replays</h1>
-            </div>
-
-            <md-field md-clearable class="md-toolbar-section-end">
+    <div class="grad-replays">
+        <div class="grad-replays__header">
+            <h1>Replays</h1>
+            <md-field md-clearable>
                 <md-icon>search</md-icon>
                 <md-input v-model="search" @input="searchOnTable" />
             </md-field>
-        </md-table-toolbar>
+        </div>
+        <div class="grad-replays__content">
 
-        <md-table-empty-state
-            v-if="search !== ''"
-            md-icon="sentiment_dissatisfied"
-            md-label="Keine Replays gefunden"
-            :md-description="`Kein Replay für die Suche '${search}' gefunden.`">
-        </md-table-empty-state>
-        <md-table-empty-state
-            v-else
-            md-icon="sentiment_dissatisfied"
-            md-label="Keine Replays gefunden"
-            md-description="Es konnten keine Replays geladen werden">
-            <md-button class="md-primary md-raised">Reload</md-button>
-        </md-table-empty-state>
-
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell >
-                <md-button class="md-icon-button md-primary md-dense" @click="selectReplay(item)">
+            <div class="grad-replays__content-row grad-replays--header">
+                <div>Name</div>
+                <div>Datum</div>
+                <div>Dauer</div>
+                <div>Karte</div>
+                <div></div>
+            </div>
+            <div class="grad-replays__content-row" v-for="row in searched" :key="row.id">
+                <div>{{row.missionName}}</div>
+                <div>{{date(row.date)}}</div>
+                <div>{{duration(row.duration)}}</div>
+                <div>{{row.worldName}}</div>
+                <md-button class="md-icon-button md-primary md-dense" @click="selectReplay(row)">
                     <md-icon>play_arrow</md-icon>
                 </md-button>
-            </md-table-cell>
-            <md-table-cell md-label="Name">{{ item.missionName }}</md-table-cell>
-            <md-table-cell md-label="Date">{{ date(item.date) }}</md-table-cell>
-            <md-table-cell md-label="Duration">{{ duration(item.duration) }}</md-table-cell>
-            <md-table-cell md-label="Map">{{ item.worldName }}</md-table-cell>
-        </md-table-row>
-    </md-table>
+            </div>
+            <md-empty-state
+                v-if="searched.length === 0 && search !== ''"
+                md-icon="sentiment_dissatisfied"
+                md-label="Keine Replays gefunden"
+                :md-description="`Kein Replay für die Suche '${search}' gefunden.`">
+            </md-empty-state>
+            <md-empty-state
+                v-if="searched.length === 0 && search == ''"
+                md-icon="sentiment_dissatisfied"
+                md-label="Keine Replays gefunden"
+                md-description="Es konnten keine Replays geladen werden">
+                <md-button @click="load" class="md-primary md-raised">Reload</md-button>
+            </md-empty-state>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -103,7 +106,60 @@ export default class ReplaysVue extends Vue {
 
 <style lang="scss" scoped>
 .grad-replays {
-    margin: 10px;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+
+    &__header {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+
+        .md-field {
+            max-width: 400px;
+        }
+    }
+
+    &__content {
+        overflow-y: auto;
+
+        &-row {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 40px;
+            grid-auto-rows: min-content;
+            padding: 5px 10px;
+
+            @media (max-width: 900px) {
+                grid-template-columns: 1fr 1fr 1fr 0px 40px;
+            }
+
+            @media (max-width: 600px) {
+                grid-template-columns: 1fr 1fr 0px 0px 40px;
+            }
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.01);
+            }
+
+            > * {
+                align-self: center;
+                overflow-x: hidden;
+            }
+
+            &.grad-replays--header {
+                border-top: 1px solid rgba(0,0,0,0.1);
+                border-bottom: 1px solid rgba(0,0,0,0.1);
+                z-index: 100;
+                background-color: var(--md-theme-default-background-variant, #fafafa);
+                position: sticky;
+                top: 0px;
+                font-weight: bold;
+            }
+        }
+    }
 }
 </style>
 
