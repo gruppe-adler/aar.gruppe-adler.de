@@ -11,6 +11,7 @@ import {
     MdProgress,
     MdField,
     MdEmptyState,
+    MdRadio,
     MdRipple
 // @ts-ignore
 } from 'vue-material/dist/components';
@@ -23,6 +24,7 @@ Vue.use(MdList);
 Vue.use(MdProgress);
 Vue.use(MdField);
 Vue.use(MdEmptyState);
+Vue.use(MdRadio);
 Vue.use(MdRipple);
 
 
