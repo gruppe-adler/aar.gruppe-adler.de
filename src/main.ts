@@ -11,7 +11,7 @@ import {
     MdProgress,
     MdField,
     MdEmptyState,
-    MdRipple,
+    MdRipple
 // @ts-ignore
 } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
