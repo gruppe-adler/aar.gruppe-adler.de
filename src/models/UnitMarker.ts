@@ -121,6 +121,7 @@ const resolveIconUrl = (icon: string) => {
         'truck',
         'motorcycle',
         'ship',
+        'radiounit',
         'unknown'
     ];
 
