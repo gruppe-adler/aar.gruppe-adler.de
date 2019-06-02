@@ -4,6 +4,7 @@ import store from './store';
 import router from './router';
 
 import {
+    MdAvatar,
     MdButton,
     MdMenu,
     MdIcon,
@@ -13,10 +14,11 @@ import {
     MdEmptyState,
     MdRadio,
     MdRipple
-// @ts-ignore
+    // @ts-ignore
 } from 'vue-material/dist/components';
 import 'vue-material/dist/vue-material.min.css';
 
+Vue.use(MdAvatar);
 Vue.use(MdButton);
 Vue.use(MdMenu);
 Vue.use(MdIcon);
