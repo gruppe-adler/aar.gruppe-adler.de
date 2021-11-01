@@ -67,15 +67,11 @@ export default class ReplaysVue extends Vue {
         this.fetchReplay();
     }
 
-    private get parsedReplayId (): number {
-        return Number.parseInt(this.rid, 10);
-    }
-
     private async fetchReplay () {
         this.loading = true;
         this.errorText = '';
         try {
-            this.replay = await fetchReplay(this.parsedReplayId);
+            this.replay = await fetchReplay(this.rid);
         } catch (err) {
             if (err.response && err.response instanceof Response) {
                 if (err.response.status === 404) {

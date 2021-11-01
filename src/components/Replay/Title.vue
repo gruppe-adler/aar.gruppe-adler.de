@@ -43,6 +43,7 @@ export default class ReplayTitleVue extends Vue {
         padding: 0 .5rem;
         display: flex;
         flex-wrap: wrap;
+        column-gap: .25rem;
 
         > span {
             font-size: 1rem;
