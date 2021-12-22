@@ -1,3 +1,7 @@
+# Merged into [replay.gruppe-adler.de](https://github.com/gruppe-adler/replay.gruppe-adler.de)
+
+---
+
 # aar.gruppe-adler.de
 
 ## Project setup
